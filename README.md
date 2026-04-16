@@ -7,7 +7,7 @@ A full-stack web application designed to manage customers and provide AI-driven 
 - **Backend**: Node.js, Express, MongoDB Atlas, Mongoose
 - **AI**: Rule-based AI insights for customer behavior analysis
 
-## Project Roadmap (7-Day Sprint)
+## Project Roadmap 
 
 ### Day 1: Foundation & Backend Core (Current)
 - Initial project structure setup.
@@ -15,32 +15,6 @@ A full-stack web application designed to manage customers and provide AI-driven 
 - MongoDB Atlas integration with Mongoose.
 - Customer schema and basic API endpoints.
 
-### Day 2: Advanced Business Logic
-- Implementation of Health Score calculation.
-- Churn Risk prediction logic.
-- Support tickets and device tracking models.
-
-### Day 3: Frontend Setup & Layout
-- Vite project initialization.
-- Tailwind CSS configuration.
-- Global layout (Sidebar, Navigation) and Routing.
-
-### Day 4: Dashboard & Data Visualization
-- Implementation of the Dashboard view.
-- Real-time metrics and usage distribution charts using Recharts.
-
-### Day 5: Customer Management
-- Advanced customer table with search and filtering.
-- CRUD operations (Add, Delete, View Details).
-
-### Day 6: AI Insights & Chat
-- Rule-based AI Query endpoint.
-- Interactive AI Chat interface.
-
-### Day 7: Final Polishing & Documentation
-- UI/UX refinements.
-- Final testing and bug fixes.
-- Comprehensive documentation.
 
 ## Getting Started
 
