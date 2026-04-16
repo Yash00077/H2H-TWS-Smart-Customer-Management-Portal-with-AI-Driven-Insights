@@ -1,0 +1,2 @@
+# H2H-TWS-Smart-Customer-Management-Portal-with-AI-Driven-Insights
+This project is a full-stack web application designed to manage customer data. It integrates AI-driven insights to enhance decision-making through natural language queries, churn prediction, and customer health analysis.  The system provides a centralized platform to monitor customer activity, predict risks, and generate actionable insights.
