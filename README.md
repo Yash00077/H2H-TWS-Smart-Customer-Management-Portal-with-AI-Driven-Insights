@@ -9,11 +9,17 @@ A full-stack web application designed to manage customers and provide AI-driven 
 
 ## Project Roadmap 
 
-### Day 1: Foundation & Backend Core (Current)
+### Day 1: Foundation & Backend Core (Completed)
 - Initial project structure setup.
 - Express server configuration.
 - MongoDB Atlas integration with Mongoose.
 - Customer schema and basic API endpoints.
+
+### Day 2: Advanced Business Logic (Current)
+- Implementation of Health Score calculation logic.
+- Churn Risk prediction logic based on customer behavior.
+- Added support Ticket and network Device schemas.
+- Enhanced API endpoints to include full customer details.
 
 
 ## Getting Started
