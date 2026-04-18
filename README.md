@@ -15,11 +15,17 @@ A full-stack web application designed to manage customers and provide AI-driven 
 - MongoDB Atlas integration with Mongoose.
 - Customer schema and basic API endpoints.
 
-### Day 2: Advanced Business Logic (Current)
+### Day 2: Advanced Business Logic (Completed)
 - Implementation of Health Score calculation logic.
 - Churn Risk prediction logic based on customer behavior.
 - Added support Ticket and network Device schemas.
 - Enhanced API endpoints to include full customer details.
+
+### Day 3: Frontend Foundation & Dashboard (Current)
+- Vite project initialization with Tailwind CSS.
+- Implementation of Sidebar, Navigation, and Client-side Routing.
+- Dashboard view with real-time metrics (Total Customers, High Churn, Avg Health).
+- Interactive Usage Distribution chart using Recharts.
 
 
 ## Getting Started
