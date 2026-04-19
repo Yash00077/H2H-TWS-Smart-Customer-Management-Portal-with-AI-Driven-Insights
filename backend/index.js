@@ -122,6 +122,44 @@ app.get('/api/customers/:id', async (req, res) => {
   }
 });
 
+// --- Day 6: AI Query Endpoint ---
+app.post('/api/ai/query', async (req, res) => {
+  const { query } = req.body;
+  const lowercaseQuery = query.toLowerCase();
+  
+  let filters = {};
+  let mongoFilter = {};
+
+  if (lowercaseQuery.includes('high churn risk')) {
+    filters.churnRisk = "High";
+    mongoFilter.churnRisk = "High";
+  } else if (lowercaseQuery.includes('medium churn risk')) {
+    filters.churnRisk = "Medium";
+    mongoFilter.churnRisk = "Medium";
+  } else if (lowercaseQuery.includes('low churn risk')) {
+    filters.churnRisk = "Low";
+    mongoFilter.churnRisk = "Low";
+  }
+
+  if (lowercaseQuery.includes('europe')) {
+    filters.region = "Europe";
+    mongoFilter.region = "Europe";
+  } else if (lowercaseQuery.includes('usa')) {
+    filters.region = "USA";
+    mongoFilter.region = "USA";
+  } else if (lowercaseQuery.includes('asia')) {
+    filters.region = "Asia";
+    mongoFilter.region = "Asia";
+  }
+
+  try {
+    const results = await Customer.find(mongoFilter);
+    res.json({ filters, results });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -21,11 +21,17 @@ A full-stack web application designed to manage customers and provide AI-driven 
 - Added support Ticket and network Device schemas.
 - Enhanced API endpoints to include full customer details.
 
-### Day 3: Frontend Foundation & Dashboard (Current)
+### Day 3: Frontend Foundation & Dashboard (Completed)
 - Vite project initialization with Tailwind CSS.
 - Implementation of Sidebar, Navigation, and Client-side Routing.
 - Dashboard view with real-time metrics (Total Customers, High Churn, Avg Health).
 - Interactive Usage Distribution chart using Recharts.
+
+### Day 4: Customer Management & AI Insights (Current)
+- Implementation of advanced Customers table with search and region filtering.
+- CRUD functionality: Add Customer (modal form) and Delete Customer.
+- Detailed Customer view with Health Score, Support Tickets, and Device lists.
+- AI Chat interface with rule-based behavioral querying (Day 6 logic included).
 
 
 ## Getting Started
