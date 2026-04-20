@@ -33,11 +33,17 @@ A full-stack web application designed to manage customers and provide AI-driven 
 - Detailed Customer view with Health Score, Support Tickets, and Device lists.
 - AI Chat interface with rule-based behavioral querying.
 
-### Day 5: Feature Completion (Current)
-- Full integration of frontend and backend systems.
-- Comprehensive end-to-end testing of all features.
-- UI/UX refinements and final bug fixes.
-- Project feature-complete and ready for deployment.
+### Day 5: Authentication, Security & Dashboard Overhaul (Completed)
+- **User Authentication**: Full JWT-based login and signup system with bcrypt password hashing.
+- **Protected Routes**: All API endpoints (`/api/customers`, `/api/ai/query`) secured with an `authenticate` middleware.
+- **Auth Context**: Frontend `AuthContext` with `AuthProvider` for global user session management.
+- **Login & Signup Pages**: Modern glassmorphism-style auth pages with animated inputs.
+- **Auto-logout**: Axios response interceptor auto-redirects to login on expired/invalid tokens.
+- **Churn Prediction Upgrade**: `churnRisk` upgraded from a plain string to an object with `level` and `factors` (e.g., "Low NPS Score", "Inactive for over 30 days").
+- **Full CRUD**: Added `PUT /api/customers/:id` and `DELETE /api/customers/:id` (with cascading ticket/device deletion).
+- **Ticket & Device Creation**: Added `POST /api/tickets` and `POST /api/devices` endpoints.
+- **AI Query Fixes**: Fixed crash bug (unhandled TypeError), backward-compatible `$or` filter for mixed churnRisk formats, region regex matching, and new plan-tier filters (Enterprise, Pro, Basic).
+- **Dashboard Redesign**: Replaced plain layout with gradient stat cards, area chart, donut chart, Top Performers list, and At-Risk customer panel.
 
 
 ## Getting Started

@@ -48,9 +48,15 @@ function CustomerDetail() {
           </div>
         </div>
         
-        <div className={`px-6 py-4 rounded-xl border text-center ${getHealthColor(customer.healthScore)}`}>
-          <div className="text-sm font-bold uppercase tracking-wider mb-1">Health Score</div>
-          <div className="text-4xl font-black">{customer.healthScore.toFixed(0)}</div>
+        <div className="flex gap-4">
+          <div className={`px-6 py-4 rounded-xl border text-center ${getHealthColor(customer.healthScore)}`}>
+            <div className="text-sm font-bold uppercase tracking-wider mb-1">Health Score</div>
+            <div className="text-4xl font-black">{customer.healthScore.toFixed(0)}</div>
+          </div>
+          <div className={`px-6 py-4 rounded-xl border text-center ${(customer.churnRisk?.level || customer.churnRisk) === 'High' ? 'bg-red-50 border-red-100 text-red-600' : (customer.churnRisk?.level || customer.churnRisk) === 'Medium' ? 'bg-yellow-50 border-yellow-100 text-yellow-600' : 'bg-green-50 border-green-100 text-green-600'}`}>
+            <div className="text-sm font-bold uppercase tracking-wider mb-1">Churn Risk</div>
+            <div className="text-4xl font-black">{customer.churnRisk?.level || customer.churnRisk || 'Low'}</div>
+          </div>
         </div>
       </div>
 
@@ -80,6 +86,16 @@ function CustomerDetail() {
                 <span className="text-sm text-gray-500">Last Active</span>
                 <span className="font-bold text-gray-900">{customer.lastActiveDays} days ago</span>
               </div>
+              {customer.churnRisk?.factors?.length > 0 && (
+                <div className="py-2 border-t border-gray-50">
+                  <span className="text-sm text-gray-500 block mb-2">Risk Factors</span>
+                  <div className="flex flex-wrap gap-2">
+                    {customer.churnRisk.factors.map((factor, i) => (
+                      <span key={i} className="text-[10px] bg-red-100 text-red-700 px-2 py-1 rounded-full font-bold">{factor}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

@@ -1,14 +1,25 @@
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Customers from './pages/Customers';
 import CustomerDetail from './pages/CustomerDetail';
 import AIChat from './pages/AIChat';
-import { LayoutDashboard, Users, MessageSquare, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthContext } from './context/AuthContext';
+import { LayoutDashboard, Users, MessageSquare, Menu, X, LogOut } from 'lucide-react';
+import { useState, useContext } from 'react';
 
-function App() {
+function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const location = useLocation();
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
@@ -41,6 +52,16 @@ function App() {
             </Link>
           ))}
         </nav>
+
+        <div className="p-4 border-t border-slate-800">
+          <button
+            onClick={handleLogout}
+            className="flex items-center w-full p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-red-400 transition-colors"
+          >
+            <LogOut size={20} className="shrink-0" />
+            {isSidebarOpen && <span className="ml-3 font-medium">Logout</span>}
+          </button>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -50,8 +71,11 @@ function App() {
             {navItems.find(item => item.path === location.pathname)?.name || 'Detail View'}
           </h2>
           <div className="flex items-center space-x-4">
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-              Y
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-gray-700">{user?.name || 'User'}</span>
+              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold uppercase">
+                {user?.name?.[0] || 'Y'}
+              </div>
             </div>
           </div>
         </header>
@@ -66,6 +90,23 @@ function App() {
         </main>
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route
+        path="/*"
+        element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 

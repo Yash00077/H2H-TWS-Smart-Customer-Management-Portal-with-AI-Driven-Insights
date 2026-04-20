@@ -7,7 +7,7 @@ function AIChat() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'bot', text: 'Hello! I can help you analyze your customer data. Try asking "Show customers with high churn risk in Europe".' }
+    { role: 'bot', text: 'Hello! I can help you analyze your customer data. Try asking:\n• "Show high risk customers"\n• "Customers in Asia with high churn risk"\n• "Show Enterprise plan customers"\n• "Low risk customers in Europe"' }
   ]);
   const [lastResults, setLastResults] = useState(null);
 
@@ -24,7 +24,7 @@ function AIChat() {
       const res = await queryAI(query);
       const botMsg = { 
         role: 'bot', 
-        text: `I've found ${res.data.results.length} customers matching your request.`,
+        text: res.data.summary || `Found ${res.data.results.length} customers matching your request.`,
         filters: res.data.filters,
         results: res.data.results
       };
@@ -129,11 +129,11 @@ function AIChat() {
                     <td className="px-6 py-4 text-sm text-gray-600">{c.company}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        c.churnRisk === 'High' ? 'bg-red-50 text-red-600' : 
-                        c.churnRisk === 'Medium' ? 'bg-yellow-50 text-yellow-600' : 
+                        (c.churnRisk?.level || c.churnRisk) === 'High' ? 'bg-red-50 text-red-600' : 
+                        (c.churnRisk?.level || c.churnRisk) === 'Medium' ? 'bg-yellow-50 text-yellow-600' : 
                         'bg-green-50 text-green-600'
                       }`}>
-                        {c.churnRisk}
+                        {c.churnRisk?.level || c.churnRisk}
                       </span>
                     </td>
                     <td className="px-6 py-4">

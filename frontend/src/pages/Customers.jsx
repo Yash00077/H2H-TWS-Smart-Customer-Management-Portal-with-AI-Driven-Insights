@@ -45,7 +45,8 @@ function Customers() {
     c.company.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const getStatusColor = (risk) => {
+  const getStatusColor = (riskObj) => {
+    const risk = riskObj?.level || riskObj;
     switch (risk) {
       case 'High': return 'bg-red-100 text-red-700';
       case 'Medium': return 'bg-yellow-100 text-yellow-700';
@@ -110,7 +111,7 @@ function Customers() {
                 </td>
                 <td className="px-6 py-4">
                   <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${getStatusColor(c.churnRisk)}`}>
-                    {c.churnRisk}
+                    {c.churnRisk?.level || c.churnRisk}
                   </span>
                 </td>
                 <td className="px-6 py-4">
