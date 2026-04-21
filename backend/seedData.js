@@ -18,7 +18,10 @@ const customerSchema = new mongoose.Schema({
   usage: Number, 
   lastActiveDays: Number, 
   healthScore: Number, 
-  churnRisk: String 
+  churnRisk: { 
+    level: { type: String, default: "Low" },
+    factors: [String]
+  }
 }); 
 
 const ticketSchema = new mongoose.Schema({ 
@@ -44,21 +47,27 @@ const plans = ["Basic", "Pro", "Enterprise"];
 const severities = ["Low", "Medium", "High"]; 
 const deviceTypes = ["Router", "Switch", "Firewall"]; 
 
-// Health Score Logic 
+// Health Score Logic (clamped to 0-100)
 function calculateHealthScore(nps, usage, lastActive, highTickets) { 
-  return ( 
-    (nps * 4) + 
+  const score = (nps * 4) + 
     (usage * 0.5) - 
     (lastActive * 1.5) - 
-    (highTickets * 10) 
-  ); 
+    (highTickets * 10); 
+  return Math.max(0, Math.min(100, score));
 } 
 
-// Churn Logic 
+// Churn Logic — matches backend predictChurnRisk() exactly
 function calculateChurn(nps, lastActive, usage) { 
-  if (nps < 5 && lastActive > 30 && usage < 40) return "High"; 
-  if (nps < 7) return "Medium"; 
-  return "Low"; 
+  const factors = [];
+  if (nps < 5) factors.push("Low NPS Score");
+  if (lastActive > 30) factors.push("Inactive for over 30 days");
+  if (usage < 40) factors.push("Low usage metrics");
+
+  let level = "Low";
+  if (factors.length >= 2) level = "High";
+  else if (factors.length === 1) level = "Medium";
+
+  return { level, factors };
 } 
 
 // MAIN SEED FUNCTION 
