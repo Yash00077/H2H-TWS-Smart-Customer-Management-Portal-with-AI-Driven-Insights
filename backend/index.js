@@ -158,7 +158,7 @@ app.get('/api/customers', authenticate, async (req, res) => {
 // Day 2: Updated POST to include calculation logic
 app.post('/api/customers', authenticate, async (req, res) => {
   try {
-    const customerData = req.body;
+    const { devices, ...customerData } = req.body;
     
     // For a new customer, we assume 0 high severity tickets initially
     customerData.healthScore = calculateHealthScore(customerData, 0);
@@ -166,6 +166,17 @@ app.post('/api/customers', authenticate, async (req, res) => {
 
     const newCustomer = new Customer(customerData);
     await newCustomer.save();
+
+    // Create associated devices if provided
+    if (devices && Array.isArray(devices) && devices.length > 0) {
+      const deviceDocs = devices.map(d => ({
+        customerId: newCustomer._id,
+        deviceType: d.deviceType,
+        count: d.count || 1
+      }));
+      await Device.insertMany(deviceDocs);
+    }
+
     res.status(201).json(newCustomer);
   } catch (err) {
     res.status(400).json({ message: err.message });

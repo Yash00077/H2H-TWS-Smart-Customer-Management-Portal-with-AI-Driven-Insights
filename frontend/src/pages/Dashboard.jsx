@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getCustomers } from '../api/client';
+import { Link } from 'react-router-dom';
 import { Users, AlertTriangle, Activity, TrendingUp, TrendingDown, Globe, Award, Zap } from 'lucide-react';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -23,20 +24,24 @@ const CHURN_COLORS = ['#ef4444', '#f59e0b', '#22c55e'];
 
 function StatCard({ icon: Icon, label, value, sub, gradient, iconBg }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl p-6 ${gradient} text-white`}>
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-white/70 mb-1">{label}</p>
-          <p className="text-4xl font-black tracking-tight">{value}</p>
-          {sub && <p className="text-xs text-white/60 mt-2">{sub}</p>}
+    <div className={`stat-card relative overflow-hidden rounded-xl md:rounded-2xl p-4 md:p-6 ${gradient} text-white cursor-default`}>
+      {/* Shimmer overlay */}
+      <div className="stat-shimmer" />
+      <div className="relative z-10 flex items-start justify-between">
+        <div className="min-w-0 flex-1">
+          <p className="text-xs md:text-sm font-medium text-white/70 mb-1 truncate">{label}</p>
+          <p className="text-2xl md:text-4xl font-black tracking-tight">{value}</p>
+          {sub && <p className="text-[10px] md:text-xs text-white/60 mt-1 md:mt-2 truncate">{sub}</p>}
         </div>
-        <div className={`p-3 rounded-xl ${iconBg}`}>
-          <Icon size={22} className="text-white" />
+        <div className={`stat-icon p-2 md:p-3 rounded-lg md:rounded-xl ${iconBg} shrink-0 ml-2`}>
+          <Icon size={18} className="text-white md:hidden" />
+          <Icon size={22} className="text-white hidden md:block" />
         </div>
       </div>
-      {/* Decorative circle */}
-      <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-white/10" />
-      <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full bg-white/5" />
+      {/* Decorative circles — animate on hover */}
+      <div className="stat-circle-1 absolute -bottom-4 -right-4 w-16 md:w-24 h-16 md:h-24 rounded-full bg-white/10" />
+      <div className="stat-circle-2 absolute -bottom-8 -right-8 w-24 md:w-32 h-24 md:h-32 rounded-full bg-white/5" />
+      <div className="stat-circle-3 absolute top-2 left-1/3 w-12 md:w-16 h-12 md:h-16 rounded-full bg-white/10" />
     </div>
   );
 }
@@ -98,12 +103,12 @@ function Dashboard() {
     .slice(0, 4);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Overview</h1>
-          <p className="text-sm text-gray-400 mt-0.5">Real-time customer health &amp; risk metrics</p>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">Overview</h1>
+          <p className="text-xs md:text-sm text-gray-400 mt-0.5">Real-time customer health &amp; risk metrics</p>
         </div>
         <div className="flex items-center gap-2 text-xs bg-green-50 text-green-600 font-semibold px-3 py-1.5 rounded-full border border-green-100">
           <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
@@ -112,7 +117,7 @@ function Dashboard() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
         <StatCard
           icon={Users}
           label="Total Customers"
@@ -148,7 +153,7 @@ function Dashboard() {
       </div>
 
       {/* Charts row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4">
         {/* Usage area chart */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <div className="flex items-center justify-between mb-6">
@@ -222,7 +227,7 @@ function Dashboard() {
       </div>
 
       {/* Bottom row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
         {/* Top healthy customers */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <div className="flex items-center justify-between mb-5">
@@ -236,12 +241,12 @@ function Dashboard() {
           </div>
           <div className="space-y-3">
             {topCustomers.map((c, i) => (
-              <div key={c.id} className="flex items-center gap-3">
+              <Link key={c.id} to={`/customers/${c.id}`} className="flex items-center gap-3 p-2 -mx-2 rounded-xl hover:bg-emerald-50 transition-colors cursor-pointer group">
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white text-xs font-bold shrink-0">
                   {i + 1}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">{c.name}</p>
+                  <p className="text-sm font-semibold text-gray-900 truncate group-hover:text-emerald-700 transition-colors">{c.name}</p>
                   <p className="text-xs text-gray-400 truncate">{c.company}</p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -255,7 +260,7 @@ function Dashboard() {
                     {(c.healthScore || 0).toFixed(0)}
                   </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -279,19 +284,19 @@ function Dashboard() {
           ) : (
             <div className="space-y-3">
               {atRiskCustomers.map(c => (
-                <div key={c.id} className="flex items-center gap-3 p-3 bg-rose-50/50 rounded-xl border border-rose-100">
+                <Link key={c.id} to={`/customers/${c.id}`} className="flex items-center gap-3 p-3 bg-rose-50/50 rounded-xl border border-rose-100 hover:bg-rose-100/60 hover:border-rose-200 transition-colors cursor-pointer group">
                   <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 font-bold text-sm shrink-0 uppercase">
                     {c.name?.[0]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 truncate">{c.name}</p>
+                    <p className="text-sm font-semibold text-gray-900 truncate group-hover:text-rose-700 transition-colors">{c.name}</p>
                     <p className="text-xs text-gray-400">{c.region} · {c.planTier}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs font-bold text-rose-600">Score: {(c.healthScore || 0).toFixed(0)}</p>
                     <p className="text-[10px] text-gray-400">NPS: {c.npsScore}/10</p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

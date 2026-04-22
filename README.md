@@ -534,6 +534,35 @@ The churn classifier evaluates three behavioral signals and assigns a risk level
   - **Health Score Clamping**: Added `Math.max(0, Math.min(100, ...))` to seed data (was allowing negative values).
   - **Detail Route Fix**: `GET /customers/:id` now recalculates both health score AND churn risk (was only recalculating health score).
 - **README Overhaul**: Complete rewrite to industry-level documentation with badges, table of contents, architecture diagrams, expandable API reference, and comprehensive business logic documentation.
+### Day 7: Landing Page, Device Management, UX Polish & Full Responsiveness (Completed)
+- **Landing Page**: Built a premium dark-themed marketing page at `/` with:
+  - Animated gradient background blurs and grid overlay.
+  - Hero section with gradient text, badge, and dual CTA buttons (Get Started → Login, Create Account → Signup).
+  - Interactive dashboard mockup preview with mini stat cards and chart.
+  - Stats bar (200+ Customers, 99.9% Uptime, <1s Query, 3 AI Models).
+  - 6 feature cards with hover-lift animations (Health Tracking, Churn Prediction, AI Engine, Risk Analysis, Customer Management, Regional Insights).
+  - Final CTA section with glowing button.
+  - **Custom Cursor**: Three-layer cursor system (dot + trailing ring + ambient glow) with scale-up on interactive elements. Desktop-only, disabled on touch devices.
+  - **Scroll Reveal Animations**: Intersection Observer-powered fade-up, scale-in, and slide animations with staggered delays. Re-trigger on scroll back up.
+  - Smooth scrolling (`scroll-behavior: smooth`) for anchor links.
+- **Device Management in Add Customer**: Dynamic device rows (type + count) can be added/removed in the "Add New Customer" modal. Backend `POST /api/customers` now creates linked `Device` documents via `Device.insertMany()`.
+- **Clickable Navigation Everywhere**:
+  - Dashboard: Top Performers and At-Risk customer entries now `<Link>` to `/customers/:id` with hover effects.
+  - Customers table: Entire `<tr>` rows are clickable via `onClick` + `useNavigate`, with `e.stopPropagation()` on the delete button.
+  - AI Chat results: Full row click navigation to customer detail page.
+- **Stat Card Hover Animations**: CSS-driven animations on dashboard stat cards:
+  - Card lifts up (translateY + scale) with deep shadow.
+  - Three decorative circles scatter in different directions (drift, rotate, scale).
+  - Shimmer light sweep across the card.
+  - Icon subtly scales and tilts.
+  - All transitions use staggered cubic-bezier easing.
+- **Full Responsive Overhaul**: Every page tested and fixed for mobile (375px), tablet (768px), and desktop:
+  - **App Layout**: Sidebar becomes a slide-out overlay on mobile with hamburger toggle, backdrop overlay, and auto-close on navigation.
+  - **Dashboard**: 2-column stat card grid on mobile, compact padding/text, responsive chart sections.
+  - **Customers**: Horizontal scroll wrapper for table, Company column hidden on small screens (shown inline), scrollable Add Customer modal (`max-h-[90vh]`), form fields stack vertically on mobile.
+  - **Customer Detail**: Responsive hero header, wrapping score cards, stacking ticket rows on mobile.
+  - **AI Chat**: Vertical stacking of chat + results on mobile, min-height panels, scrollable results table.
+- **Routing Update**: Landing page at `/`, dashboard moved to `/dashboard`. Login/Signup redirect to `/dashboard` after auth. Logout redirects to `/login`.
 
 <br/>
 

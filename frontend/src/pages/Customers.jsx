@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { getCustomers, createCustomer, deleteCustomer } from '../api/client';
-import { Trash2, Plus, X, Search, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Trash2, Plus, X, Search, ChevronRight, Monitor } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Customers() {
   const [customers, setCustomers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
   const [newCustomer, setNewCustomer] = useState({
     name: '',
     company: '',
@@ -15,8 +16,30 @@ function Customers() {
     npsScore: 5,
     usage: 50,
     lastActiveDays: 0,
-    contractEndDate: '2026-12-31'
+    contractEndDate: '2026-12-31',
+    devices: []
   });
+
+  const addDevice = () => {
+    setNewCustomer(prev => ({
+      ...prev,
+      devices: [...prev.devices, { deviceType: 'Router', count: 1 }]
+    }));
+  };
+
+  const removeDevice = (index) => {
+    setNewCustomer(prev => ({
+      ...prev,
+      devices: prev.devices.filter((_, i) => i !== index)
+    }));
+  };
+
+  const updateDevice = (index, field, value) => {
+    setNewCustomer(prev => ({
+      ...prev,
+      devices: prev.devices.map((d, i) => i === index ? { ...d, [field]: value } : d)
+    }));
+  };
 
   const fetchData = () => {
     getCustomers().then(res => setCustomers(res.data));
@@ -30,6 +53,17 @@ function Customers() {
     e.preventDefault();
     await createCustomer(newCustomer);
     setIsModalOpen(false);
+    setNewCustomer({
+      name: '',
+      company: '',
+      region: 'North America',
+      planTier: 'Basic',
+      npsScore: 5,
+      usage: 50,
+      lastActiveDays: 0,
+      contractEndDate: '2026-12-31',
+      devices: []
+    });
     fetchData();
   };
 
@@ -79,61 +113,62 @@ function Customers() {
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b border-gray-100">
-            <tr>
-              <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Customer</th>
-              <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Company</th>
-              <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Plan</th>
-              <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Health Score</th>
-              <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Churn Risk</th>
-              <th className="px-6 py-4 text-sm font-semibold text-gray-600 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {filteredCustomers.map((c) => (
-              <tr key={c.id} className="hover:bg-gray-50 group">
-                <td className="px-6 py-4">
-                  <div className="font-medium text-gray-900">{c.name}</div>
-                  <div className="text-xs text-gray-500">{c.region}</div>
-                </td>
-                <td className="px-6 py-4 text-gray-600">{c.company}</td>
-                <td className="px-6 py-4">
-                  <span className="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">{c.planTier}</span>
-                </td>
-                <td className="px-6 py-4">
-                   <div className="flex items-center space-x-2">
-                     <div className="w-16 h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div className={`h-full ${c.healthScore > 80 ? 'bg-green-500' : c.healthScore > 50 ? 'bg-yellow-500' : 'bg-red-500'}`} style={{ width: `${c.healthScore}%` }}></div>
-                     </div>
-                     <span className="text-sm font-bold">{c.healthScore.toFixed(0)}</span>
-                   </div>
-                </td>
-                <td className="px-6 py-4">
-                  <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${getStatusColor(c.churnRisk)}`}>
-                    {c.churnRisk?.level || c.churnRisk}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center space-x-3">
-                    <Link to={`/customers/${c.id}`} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors">
-                      <ChevronRight size={18} />
-                    </Link>
-                    <button onClick={() => handleDelete(c.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors opacity-0 group-hover:opacity-100">
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left min-w-[600px]">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-semibold text-gray-600 uppercase">Customer</th>
+                <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-semibold text-gray-600 uppercase hidden sm:table-cell">Company</th>
+                <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-semibold text-gray-600 uppercase">Plan</th>
+                <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-semibold text-gray-600 uppercase">Health</th>
+                <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-semibold text-gray-600 uppercase">Risk</th>
+                <th className="px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-semibold text-gray-600 uppercase">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filteredCustomers.map((c) => (
+                <tr key={c.id} onClick={() => navigate(`/customers/${c.id}`)} className="hover:bg-blue-50/50 group cursor-pointer transition-colors">
+                  <td className="px-4 md:px-6 py-3 md:py-4">
+                    <div className="font-medium text-gray-900 text-sm">{c.name}</div>
+                    <div className="text-xs text-gray-500">{c.region}</div>
+                    <div className="text-xs text-gray-400 sm:hidden">{c.company}</div>
+                  </td>
+                  <td className="px-4 md:px-6 py-3 md:py-4 text-gray-600 text-sm hidden sm:table-cell">{c.company}</td>
+                  <td className="px-4 md:px-6 py-3 md:py-4">
+                    <span className="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">{c.planTier}</span>
+                  </td>
+                  <td className="px-4 md:px-6 py-3 md:py-4">
+                     <div className="flex items-center space-x-2">
+                       <div className="w-12 md:w-16 h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div className={`h-full ${c.healthScore > 80 ? 'bg-green-500' : c.healthScore > 50 ? 'bg-yellow-500' : 'bg-red-500'}`} style={{ width: `${c.healthScore}%` }}></div>
+                       </div>
+                       <span className="text-sm font-bold">{c.healthScore.toFixed(0)}</span>
+                     </div>
+                  </td>
+                  <td className="px-4 md:px-6 py-3 md:py-4">
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(c.churnRisk)}`}>
+                      {c.churnRisk?.level || c.churnRisk}
+                    </span>
+                  </td>
+                  <td className="px-4 md:px-6 py-3 md:py-4">
+                    <div className="flex items-center space-x-2">
+                      <ChevronRight size={18} className="text-gray-400 group-hover:text-blue-600 transition-colors" />
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(c.id); }} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors opacity-0 group-hover:opacity-100">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
               <h3 className="text-xl font-bold">Add New Customer</h3>
               <button onClick={() => setIsModalOpen(false)} className="p-1 hover:bg-gray-100 rounded">
@@ -141,7 +176,7 @@ function Customers() {
               </button>
             </div>
             <form onSubmit={handleCreate} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700">Name</label>
                   <input
@@ -162,7 +197,7 @@ function Customers() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700">Region</label>
                   <select
@@ -189,7 +224,7 @@ function Customers() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700">NPS Score (0-10)</label>
                   <input
@@ -211,6 +246,58 @@ function Customers() {
                     value={newCustomer.usage}
                     onChange={(e) => setNewCustomer({...newCustomer, usage: Number(e.target.value)})}
                   />
+                </div>
+              </div>
+
+              {/* Devices Section */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium text-gray-700 flex items-center">
+                    <Monitor size={16} className="mr-1.5 text-blue-600" />
+                    Devices
+                  </label>
+                  <button
+                    type="button"
+                    onClick={addDevice}
+                    className="flex items-center text-xs px-2.5 py-1 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+                  >
+                    <Plus size={14} className="mr-1" />
+                    Add Device
+                  </button>
+                </div>
+                {newCustomer.devices.length === 0 && (
+                  <p className="text-xs text-gray-400 italic">No devices added yet. Click "Add Device" to register devices.</p>
+                )}
+                <div className="space-y-2 max-h-40 overflow-y-auto">
+                  {newCustomer.devices.map((device, index) => (
+                    <div key={index} className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-lg border border-gray-100">
+                      <select
+                        className="flex-1 px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
+                        value={device.deviceType}
+                        onChange={(e) => updateDevice(index, 'deviceType', e.target.value)}
+                      >
+                        <option>Router</option>
+                        <option>Switch</option>
+                        <option>Firewall</option>
+                      </select>
+                      <input
+                        type="number"
+                        min="1"
+                        max="100"
+                        className="w-20 px-2.5 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-center"
+                        value={device.count}
+                        onChange={(e) => updateDevice(index, 'count', Number(e.target.value))}
+                        placeholder="Qty"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeDevice(index)}
+                        className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
 

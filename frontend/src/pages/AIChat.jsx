@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { queryAI } from '../api/client';
 import { MessageSquare, Send, Bot, User, ChevronRight, AlertCircle, Filter, Sparkles, TrendingDown, TrendingUp, Activity, Clock, BarChart3, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const suggestedPrompts = [
   { icon: TrendingDown, text: "Who will churn first?", color: "text-red-500 bg-red-50" },
@@ -20,6 +20,7 @@ function AIChat() {
   ]);
   const [lastResults, setLastResults] = useState(null);
   const chatEndRef = useRef(null);
+  const navigate = useNavigate();
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -71,9 +72,9 @@ function AIChat() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-10rem)]">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8 h-auto lg:h-[calc(100vh-10rem)]">
       {/* Chat Area */}
-      <div className="lg:col-span-1 flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="lg:col-span-1 flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden min-h-[400px] lg:min-h-0">
         <div className="p-4 border-b border-gray-100 flex items-center bg-gradient-to-r from-blue-50 to-indigo-50">
           <div className="p-1.5 bg-blue-100 rounded-lg mr-2">
             <Sparkles size={16} className="text-blue-600" />
@@ -173,7 +174,7 @@ function AIChat() {
       </div>
 
       {/* Results Table */}
-      <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
+      <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col min-h-[300px] lg:min-h-0">
         <div className="p-4 border-b border-gray-100 bg-gray-50 font-bold flex items-center justify-between">
            <div className="flex items-center">
              <Filter size={18} className="mr-2 text-gray-500" />
@@ -185,7 +186,7 @@ function AIChat() {
         <div className="flex-1 overflow-auto">
           {lastResults ? (
             lastResults.length > 0 ? (
-              <table className="w-full text-left">
+              <table className="w-full text-left min-w-[500px]">
                 <thead className="bg-gray-50 sticky top-0 border-b border-gray-100">
                   <tr>
                     <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Customer</th>
@@ -202,7 +203,7 @@ function AIChat() {
                     const riskLevel = c.churnRisk?.level || c.churnRisk;
                     const healthScore = c.healthScore || 0;
                     return (
-                      <tr key={c.id || c._id} className="hover:bg-blue-50/30 group transition-colors">
+                      <tr key={c.id || c._id} onClick={() => navigate(`/customers/${c.id || c._id}`)} className="hover:bg-blue-50/30 group transition-colors cursor-pointer">
                         <td className="px-6 py-4">
                           <div className="font-medium text-gray-900">{c.name}</div>
                           <div className="text-[10px] text-gray-400">{c.region}</div>
@@ -248,9 +249,7 @@ function AIChat() {
                           <span className="text-sm text-gray-600">{c.usage}%</span>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <Link to={`/customers/${c.id || c._id}`} className="text-blue-600 hover:underline text-xs font-bold flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                            View <ChevronRight size={14} className="ml-1" />
-                          </Link>
+                          <ChevronRight size={16} className="text-gray-400 group-hover:text-blue-600 transition-colors ml-auto" />
                         </td>
                       </tr>
                     );

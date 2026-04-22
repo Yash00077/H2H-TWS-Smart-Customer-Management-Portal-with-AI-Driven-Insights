@@ -31,16 +31,16 @@ function CustomerDetail() {
   };
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
+    <div className="space-y-6 md:space-y-8 max-w-5xl mx-auto">
       <button onClick={() => navigate('/customers')} className="flex items-center text-gray-500 hover:text-gray-900 transition-colors">
         <ArrowLeft size={18} className="mr-2" />
         Back to Customers
       </button>
 
       {/* Hero Header */}
-      <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="bg-white p-4 md:p-8 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-4 md:gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{customer.name}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{customer.name}</h1>
           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
             <span className="flex items-center"><MapPin size={16} className="mr-1.5" /> {customer.region}</span>
             <span className="flex items-center"><Calendar size={16} className="mr-1.5" /> Contract Ends: {customer.contractEndDate}</span>
@@ -48,19 +48,19 @@ function CustomerDetail() {
           </div>
         </div>
         
-        <div className="flex gap-4">
-          <div className={`px-6 py-4 rounded-xl border text-center ${getHealthColor(customer.healthScore)}`}>
+        <div className="flex flex-wrap gap-3 md:gap-4">
+          <div className={`px-4 md:px-6 py-3 md:py-4 rounded-xl border text-center flex-1 min-w-[120px] ${getHealthColor(customer.healthScore)}`}>
             <div className="text-sm font-bold uppercase tracking-wider mb-1">Health Score</div>
-            <div className="text-4xl font-black">{customer.healthScore.toFixed(0)}</div>
+            <div className="text-3xl md:text-4xl font-black">{customer.healthScore.toFixed(0)}</div>
           </div>
-          <div className={`px-6 py-4 rounded-xl border text-center ${(customer.churnRisk?.level || customer.churnRisk) === 'High' ? 'bg-red-50 border-red-100 text-red-600' : (customer.churnRisk?.level || customer.churnRisk) === 'Medium' ? 'bg-yellow-50 border-yellow-100 text-yellow-600' : 'bg-green-50 border-green-100 text-green-600'}`}>
+          <div className={`px-4 md:px-6 py-3 md:py-4 rounded-xl border text-center flex-1 min-w-[120px] ${(customer.churnRisk?.level || customer.churnRisk) === 'High' ? 'bg-red-50 border-red-100 text-red-600' : (customer.churnRisk?.level || customer.churnRisk) === 'Medium' ? 'bg-yellow-50 border-yellow-100 text-yellow-600' : 'bg-green-50 border-green-100 text-green-600'}`}>
             <div className="text-sm font-bold uppercase tracking-wider mb-1">Churn Risk</div>
-            <div className="text-4xl font-black">{customer.churnRisk?.level || customer.churnRisk || 'Low'}</div>
+            <div className="text-3xl md:text-4xl font-black">{customer.churnRisk?.level || customer.churnRisk || 'Low'}</div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
         {/* Left Column: Details */}
         <div className="md:col-span-1 space-y-6">
           <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
@@ -129,7 +129,7 @@ function CustomerDetail() {
             </div>
             <div className="divide-y divide-gray-50">
               {customer.tickets.length > 0 ? customer.tickets.map((t) => (
-                <div key={t.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <div key={t.id} className="p-4 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center space-x-4">
                     <div className={`p-2 rounded-full ${t.severity === 'High' ? 'bg-red-50 text-red-500' : 'bg-gray-50 text-gray-500'}`}>
                       {t.severity === 'High' ? <AlertCircle size={20} /> : <Ticket size={20} />}

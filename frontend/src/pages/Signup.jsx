@@ -22,7 +22,7 @@ const Signup = () => {
     try {
       const res = await registerUser({ name, email, password });
       login(res.data.user, res.data.token);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
