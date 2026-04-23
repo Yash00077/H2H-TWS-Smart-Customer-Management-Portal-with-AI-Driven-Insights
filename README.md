@@ -40,6 +40,7 @@ A production-ready, full-stack web application for managing customer relationshi
 - [API Reference](#-api-reference)
 - [Business Logic](#-business-logic)
 - [Project Roadmap](#-project-roadmap)
+- [Deployment](#-deployment)
 - [Contributing](#-contributing)
 - [License](#-license)
 
@@ -563,6 +564,43 @@ The churn classifier evaluates three behavioral signals and assigns a risk level
   - **Customer Detail**: Responsive hero header, wrapping score cards, stacking ticket rows on mobile.
   - **AI Chat**: Vertical stacking of chat + results on mobile, min-height panels, scrollable results table.
 - **Routing Update**: Landing page at `/`, dashboard moved to `/dashboard`. Login/Signup redirect to `/dashboard` after auth. Logout redirects to `/login`.
+
+<br/>
+
+### Day 8: Production Readiness & Deployment (Completed)
+- **Monolithic Support**: Configured Express to serve the built React frontend (`dist` folder) in production (`NODE_ENV=production`), allowing single-server deployment.
+- **Backend Enhancements**: Added `helmet` for security headers, `compression` for response gzip, and a global error-handling middleware.
+- **Frontend Refinements**: `apiClient.js` now automatically switches from `http://localhost:5000/api` to relative `/api` paths when built for production (`import.meta.env.PROD`).
+- **Monorepo Scripts**: Added a root `package.json` to allow one-click cloud deployments (installs both frontend & backend dependencies and builds frontend).
+- **Environment Templates**: Added `.env.example` templates to both `frontend` and `backend`.
+
+<br/>
+
+## 🚀 Deployment
+
+The Smart Customer Management Portal is designed to be easily deployed on cloud platforms like **Render**, **Heroku**, or **DigitalOcean Apps** as a single monolithic service.
+
+### Option 1: Monolithic Deployment (Recommended)
+
+Thanks to the root `package.json` and backend static serving, you can deploy both frontend and backend on Render as a single **Web Service**.
+
+1. Create a new **Web Service** on Render and connect your repository.
+2. Use the following configuration:
+   - **Branch**: `main`
+   - **Root Directory**: *(leave blank)*
+   - **Build Command**: `npm run install`
+   - **Start Command**: `npm start`
+3. Add the following Environment Variables under **Advanced**:
+   - `NODE_ENV`: `production`
+   - `MONGODB_URI`: *Your MongoDB connection string*
+   - `JWT_SECRET`: *A secure random string*
+
+The platform will install all dependencies, build the frontend React application, and start the Express backend which serves both the API and the static frontend assets securely.
+
+### Option 2: Split Deployment (Vercel + Render)
+
+1. **Backend on Render**: Set Root Directory to `backend`, Build Command to `npm install`, Start Command to `node index.js`. Add `MONGODB_URI` and `JWT_SECRET`.
+2. **Frontend on Vercel**: Import the `frontend` folder to Vercel. Add Environment Variable `VITE_API_BASE_URL` pointing to your deployed backend URL (e.g., `https://my-backend.onrender.com/api`).
 
 <br/>
 

@@ -5,10 +5,16 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const path = require('path');
+const helmet = require('helmet');
+const compression = require('compression');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(helmet({
+  contentSecurityPolicy: false, // Useful if frontend uses external CDNs or APIs
+}));
+app.use(compression());
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -658,6 +664,27 @@ app.post('/api/ai/query', authenticate, async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+});
+
+// --- Production Setup & Error Handling ---
+// Serve Frontend in Production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+  // Any route that is not API will be handled by React
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'));
+  });
+}
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    message: 'Something went wrong!', 
+    error: process.env.NODE_ENV === 'production' ? 'Server Error' : err.message 
+  });
 });
 
 app.listen(PORT, () => {
